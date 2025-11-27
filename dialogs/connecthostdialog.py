@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-from PyQt5 import QtWidgets, uic
+from PyQt6 import QtWidgets, uic
 
 class ConnectHostDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):

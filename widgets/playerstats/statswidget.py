@@ -1,8 +1,8 @@
 import os
-from PyQt5 import QtCore, QtWidgets, QtGui, uic
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt6 import QtCore, QtWidgets, QtGui, uic
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 from widgets.shared.graphics import ImageFactory
 from widgets import widgets
 from widgets.shared.PipboyIcon import PipboyIcon

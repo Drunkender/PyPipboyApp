@@ -3,7 +3,7 @@
 
 import os
 import re
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PyQt6 import QtWidgets, QtCore, QtGui, uic
 from widgets import widgets
 from widgets.shared import settings
 
@@ -40,9 +40,9 @@ class LocationTableModel(QtCore.QAbstractTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return 8
     
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == 0:
                     return 'Name'
                 elif section == 1:
@@ -61,11 +61,11 @@ class LocationTableModel(QtCore.QAbstractTableModel):
                     return 'Visible'
         return None
     
-    def data(self, index, role = QtCore.Qt.DisplayRole):
+    def data(self, index, role = QtCore.Qt.ItemDataRole.DisplayRole):
         return self._data(self.pipWorldLocations.child(index.row()), index.column(), role)
         
-    def _data(self, location, column, role = QtCore.Qt.DisplayRole):
-        if role == QtCore.Qt.DisplayRole:
+    def _data(self, location, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == 0:
                 return location.child('Name').value()
             elif column == 1:
@@ -114,11 +114,11 @@ class LocationTableModel(QtCore.QAbstractTableModel):
                         return 'yes'
                     else:
                         return 'no'
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == 0:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             else:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
         return None
         
     def getPipValue(self, row):
@@ -138,9 +138,9 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
         self.showUnknown = bool(int(self.settings.value('locationbrowserwidget/showUnknown', 0)))
         self.nameFilterString = ''
         
-    def sort(self, column, order = QtCore.Qt.AscendingOrder):
+    def sort(self, column, order = QtCore.Qt.SortOrder.AscendingOrder):
         self.sortColumn = column
-        if order == QtCore.Qt.DescendingOrder:
+        if order == QtCore.Qt.SortOrder.DescendingOrder:
             self.sortReversed = True
         else:
             self.sortReversed = False
@@ -157,16 +157,16 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
                 return True
         return False
     
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
-        if orientation == QtCore.Qt.Vertical:
-            if role == QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if orientation == QtCore.Qt.Orientation.Vertical:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 return section + 1
         else:
             return super().headerData(section, orientation, role)
         
-    @QtCore.pyqtSlot(bool)        
+    @QtCore.pyqtSlot(int)
     def showUnknownLocations(self, value):
-        self.showUnknown = value
+        self.showUnknown = bool(value)
         self.settings.setValue('locationbrowserwidget/showUnknown', int(value))
         self.invalidateFilter()
     
@@ -194,7 +194,7 @@ class LocationBrowserWidget(widgets.WidgetBase):
         self.sortProxyModel = SortProxyModel(self.app.settings)
         self.sortProxyModel.setSourceModel(self.locationViewModel)
         self.widget.locationView.setModel(self.sortProxyModel)
-        self.widget.locationView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.widget.locationView.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.widget.locationView.customContextMenuRequested.connect(self._slotLocationTableContextMenu)
         self.widget.locationView.selectionModel().currentChanged.connect(self._slotLocationItemSelected)
         self.widget.locationView.doubleClicked.connect(self._slotLocationItemDoubleClicked)
@@ -205,9 +205,9 @@ class LocationBrowserWidget(widgets.WidgetBase):
         settings.setHeaderSectionSizes(self.locationTableHeader, self.app.settings.value('locationbrowserwidget/LocationHeaderSectionSizes', []))
         settings.setHeaderSectionVisualIndices(self.locationTableHeader, self.app.settings.value('locationbrowserwidget/LocationHeaderSectionVisualIndices', []))
         if self.sortProxyModel.sortReversed:
-            self.widget.locationView.sortByColumn(self.sortProxyModel.sortColumn, QtCore.Qt.DescendingOrder)
+            self.widget.locationView.sortByColumn(self.sortProxyModel.sortColumn, QtCore.Qt.SortOrder.DescendingOrder)
         else:
-            self.widget.locationView.sortByColumn(self.sortProxyModel.sortColumn, QtCore.Qt.AscendingOrder)
+            self.widget.locationView.sortByColumn(self.sortProxyModel.sortColumn, QtCore.Qt.SortOrder.AscendingOrder)
         self.locationTableHeader.sectionResized.connect(self._slotLocationTableSectionResized)
         self.locationTableHeader.sectionMoved.connect(self._slotLocationTableSectionMoved)
         self.propertyTableHeader = self.widget.propertyTable.horizontalHeader()

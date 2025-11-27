@@ -7,7 +7,7 @@ import logging
 import textwrap
 import uuid
 from collections import OrderedDict
-from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtMultimedia
+from PyQt6 import QtWidgets, QtCore, QtGui, uic, QtMultimedia
 from widgets.shared.graphics import ImageFactory
 from widgets import widgets
 from widgets.shared import settings
@@ -30,7 +30,7 @@ class PlayerMarker(PipValueMarkerBase):
         self.markerItem.setZValue(10)
         self.setColor(color,False)
         self.setSize(size, False)
-        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Bold), False)
+        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Weight.Bold), False)
         self.setLabel('Player', False)
         self.doUpdate()
 
@@ -64,7 +64,7 @@ class CustomMarker(PipValueMarkerBase):
         self.markerItem.setZValue(0)
         self.setColor(color,False)
         self.setSize(size, False)
-        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Bold), False)
+        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Weight.Bold), False)
         self.setLabel('Custom Marker', False)
         self.doUpdate()
         
@@ -117,7 +117,7 @@ class PowerArmorMarker(PipValueMarkerBase):
         self.markerItem.setZValue(0)
         self.setColor(color,False)
         self.setSize(size,False)
-        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Bold), False)
+        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Weight.Bold), False)
         self.setLabel('Power Armor', False)
         self.filterVisibleFlag = True
         self.PipVisible = False
@@ -167,7 +167,7 @@ class QuestMarker(PipValueMarkerBase):
         self.markerItem.setZValue(0)
         self.setColor(color,False)
         self.setSize(size,False)
-        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Bold), False)
+        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Weight.Bold), False)
         self.setLabel('Quest Marker', False)
         self.doUpdate()
         
@@ -232,7 +232,7 @@ class LocationMarker(PipValueMarkerBase):
         self.markerItem.setZValue(0)
         self.setColor(color,False)
         self.setSize(size,False)
-        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Bold), False)
+        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Weight.Bold), False)
         self.setLabel('Location', False)
         self.locType = -1
         self.noTypePixmapFound = False
@@ -343,7 +343,7 @@ class LocationMarker(PipValueMarkerBase):
         else:
             p = _getDefaultPixmap()
         px = QtGui.QPixmap(p.width() + 10, p.height())
-        px.fill(QtCore.Qt.transparent)
+        px.fill(QtCore.Qt.GlobalColor.transparent)
         pn = QtGui.QPainter(px)
         pn.drawPixmap(QtCore.QRect(0,0,p.width(),p.height()), p)
         overlayXOffset = p.width() + 2
@@ -504,7 +504,7 @@ class LocationMarker(PipValueMarkerBase):
                         self.widget._app.settings.endGroup();
                         self.setStickyLabel(False, True)
 
-            menu.addAction('Add\Edit Note', _addMarkerNote)
+            menu.addAction(r'Add\Edit Note', _addMarkerNote)
             
             if self.pipValue.child('WorkshopOwned'):
                 @QtCore.pyqtSlot()
@@ -546,7 +546,7 @@ class PointofInterestMarker(MarkerBase):
         self.markerItem.setZValue(0)
         self.setColor(color,False)
         self.setSize(size,False)
-        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Bold), False)
+        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Weight.Bold), False)
         self.setLabel('Point of Interest Marker', False)
         self.filterVisibleFlag = True
         self.uid = str(uid)
@@ -668,7 +668,7 @@ class CollectableMarker(MarkerBase):
         if self.color is not None:
             self.uncollectedColor = QtGui.QColor.fromRgb(self.color.red(), self.color.green(), self.color.blue())
             self.collectedColor = self.color.darker(200)
-        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Bold), False)
+        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Weight.Bold), False)
         self.setLabel('Collectable Marker', False)
         self.filterVisibleFlag = True
         self.uid = uid
@@ -705,7 +705,7 @@ class CollectableMarker(MarkerBase):
         p = self.imageFactory.getPixmap(self.imageFilePath, size=self.size, color=self.color)
 
         px = QtGui.QPixmap(p.width() + 10, p.height())
-        px.fill(QtCore.Qt.transparent)
+        px.fill(QtCore.Qt.GlobalColor.transparent)
         pn = QtGui.QPainter(px)
         pn.drawPixmap(QtCore.QRect(0,0,p.width(),p.height()), p)
         overlayXOffset = p.width() + 2
@@ -870,6 +870,8 @@ class GlobalMapWidget(widgets.WidgetBase):
         self.controller = controller
         self.widget = uic.loadUi(os.path.join(self.basepath, 'ui', 'globalmapwidget.ui'))
         self.setWidget(self.widget)
+        # Fix PyQt6 compatibility - set dragMode programmatically
+        self.widget.mapGraphicsView.setDragMode(QtWidgets.QGraphicsView.DragMode.ScrollHandDrag)
         self._logger = logging.getLogger('pypipboyapp.map.globalmap')
         self.mapZoomLevel = 1.0
         self.characterDataManager = None
@@ -1178,7 +1180,7 @@ class GlobalMapWidget(widgets.WidgetBase):
                 collectedBtnGroup.addButton(neverShowCollected,0)
                 collectedBtnGroup.addButton(nearShowCollected,2)
                 self.collectableBtnGroups.append(collectedBtnGroup)
-                collectedBtnGroup.buttonClicked[int].connect(self._showCollectableBtnGroupClicked)
+                collectedBtnGroup.buttonClicked.connect(lambda btn, group=collectedBtnGroup: self._showCollectableBtnGroupClicked(group.id(btn)))
                 collectedBtnGroup.button(showCollected).setChecked(True)
 
 
@@ -1199,7 +1201,7 @@ class GlobalMapWidget(widgets.WidgetBase):
                 uncollectedBtnGroup.addButton(neverShowUncollected,0)
                 uncollectedBtnGroup.addButton(nearShowUncollected,2)
                 self.collectableBtnGroups.append(uncollectedBtnGroup)
-                uncollectedBtnGroup.buttonClicked[int].connect(self._showCollectableBtnGroupClicked)
+                uncollectedBtnGroup.buttonClicked.connect(lambda btn, group=uncollectedBtnGroup: self._showCollectableBtnGroupClicked(group.id(btn)))
                 uncollectedBtnGroup.button(showUncollected).setChecked(True)
 
                 uncollectedVisualRange = QtWidgets.QSpinBox()
@@ -1535,8 +1537,9 @@ class GlobalMapWidget(widgets.WidgetBase):
         self.mapMarkerSize = size
         self.signalSetMarkerSize.emit(size)
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.pyqtSlot(float)
     def _slotMarkerSizeSpinboxTriggered (self,size):
+        size = int(size)
         self.widget.markerSizeSlider.blockSignals(True)
         self.widget.markerSizeSlider.setValue(size)
         self.widget.markerSizeSlider.blockSignals(False)
@@ -1544,31 +1547,36 @@ class GlobalMapWidget(widgets.WidgetBase):
         self._app.settings.setValue('globalmapwidget/mapMarkerSize', size)
         self.signalSetMarkerSize.emit(size)
 
-    @QtCore.pyqtSlot(bool)
+    @QtCore.pyqtSlot(int)
     def _slotStickyLabelsTriggered(self, value):
+        value = bool(value)
         self.stickyLabelsEnabled = value
         self._app.settings.setValue('globalmapwidget/stickyLabels', int(value))
         self.signalSetStickyLabel.emit(value)
         
-    @QtCore.pyqtSlot(bool)        
+    @QtCore.pyqtSlot(int)
     def _slotPowerMarkerEnableTriggered(self, value):
+        value = bool(value)
         self.powerArmorMarker.filterSetVisible(value)
         self._app.settings.setValue('globalmapwidget/powerArmourMarker', int(value))
         
-    @QtCore.pyqtSlot(bool)        
+    @QtCore.pyqtSlot(int)
     def _slotLocationEnableTriggered(self, value):
+        value = bool(value)
         self.locationFilterEnableFlag = value
         self._app.settings.setValue('globalmapwidget/locationMarker', int(value))
         self.signalLocationFilterSetVisible.emit(value)
         
-    @QtCore.pyqtSlot(bool)        
+    @QtCore.pyqtSlot(int)
     def _slotLocationVisibilityCheatTriggered(self, value):
+        value = bool(value)
         self.locationVisibilityCheatFlag = value
         self._app.settings.setValue('globalmapwidget/locationVisibilityCheat', int(value))
         self.signalLocationFilterVisibilityCheat.emit(value)
         
-    @QtCore.pyqtSlot(bool)        
+    @QtCore.pyqtSlot(int)
     def _slotCenterOnPlayerCheckToggled(self, value):
+        value = bool(value)
         self.centerOnPlayerEnabled = value
         self._app.settings.setValue('globalmapwidget/centerPlayer', int(value))
         if value and self.playerMarker.markerItem.isVisible():
@@ -1630,8 +1638,9 @@ class GlobalMapWidget(widgets.WidgetBase):
                                 self.collectablesNearPlayer.remove(marker.uid)
 
 
-    @QtCore.pyqtSlot(bool)
+    @QtCore.pyqtSlot(int)
     def _slotMapColorAutoModeTriggered(self, value):
+        value = bool(value)
         self._app.settings.setValue('globalmapwidget/autoColour', int(value))
         if self.pipMapObject:
             if value:

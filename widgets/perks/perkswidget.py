@@ -1,10 +1,10 @@
 import os
 import math
 import logging
-from PyQt5 import QtCore, QtWidgets, QtGui, uic
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt6 import QtCore, QtWidgets, QtGui, uic
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 from widgets import widgets
 from widgets.shared.PipboyIcon import PipboyIcon
 
@@ -158,7 +158,7 @@ class PerksWidget(widgets.WidgetBase):
                             ]
                             self.PerkListModel.appendRow(ListItem)
     
-                self.Widgets.perkList.sortByColumn(2, QtCore.Qt.AscendingOrder)
+                self.Widgets.perkList.sortByColumn(2, QtCore.Qt.SortOrder.AscendingOrder)
                 self.Widgets.perkList.hideColumn(0)
                 self.Widgets.perkList.resizeColumnToContents(1)
     

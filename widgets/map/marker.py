@@ -3,7 +3,7 @@
 
 import os
 import logging
-from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtSvg
+from PyQt6 import QtWidgets, QtCore, QtGui, uic, QtSvg
 
 
 
@@ -36,7 +36,7 @@ class MarkerBase(QtCore.QObject):
             self.parent._labelDoubleClickEvent_(event)
         def paint(self, painter, option, widget):
             self.setOpacity(0.6)
-            brush = QtCore.Qt.black
+            brush = QtCore.Qt.GlobalColor.black
             painter.setBrush(brush)
             painter.setPen(brush)
             painter.drawRect(self.boundingRect().adjusted(-3,-3,6,6))

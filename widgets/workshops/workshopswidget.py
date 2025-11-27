@@ -1,8 +1,8 @@
 import os
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt6 import QtCore, QtGui, QtWidgets, uic
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 from widgets import widgets
 from widgets.shared.PipboyIcon import PipboyIcon
 from .workshopsmodel import WorkshopTableModel, SortProxyModel
@@ -61,7 +61,7 @@ class WorkshopsWidget(widgets.WidgetBase):
         self.sortModel.setSourceModel(self.workshopModel)
         self.Widgets.workshopList.setModel(self.sortModel) # we need to call setModel() before selectionModel() (and never afterwards)
         self.Widgets.workshopList.selectionModel().currentChanged.connect(self.WorkshopListCurrentChanged)
-        self.Widgets.workshopList.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.Widgets.workshopList.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.Widgets.workshopList.customContextMenuRequested.connect(self.workshopListMenuRequested)
         # Init Splitter
         settings.setSplitterState(self.Widgets.splitter, self.app.settings.value('workshopsbrowser/splitterState', None))
@@ -73,9 +73,9 @@ class WorkshopsWidget(widgets.WidgetBase):
         settings.setHeaderSectionSizes(self.tableHeader, self.app.settings.value('workshopsbrowser/HeaderSectionSizes', []))
         settings.setHeaderSectionVisualIndices(self.tableHeader, self.app.settings.value('workshopsbrowser/HeaderSectionVisualIndices', []))
         if self.sortModel.sortReversed:
-            self.Widgets.workshopList.sortByColumn(self.sortModel.sortColumn, QtCore.Qt.DescendingOrder)
+            self.Widgets.workshopList.sortByColumn(self.sortModel.sortColumn, QtCore.Qt.SortOrder.DescendingOrder)
         else:
-            self.Widgets.workshopList.sortByColumn(self.sortModel.sortColumn, QtCore.Qt.AscendingOrder)
+            self.Widgets.workshopList.sortByColumn(self.sortModel.sortColumn, QtCore.Qt.SortOrder.AscendingOrder)
         self.tableHeader.sectionResized.connect(self._slotTableSectionResized)
         self.tableHeader.sectionMoved.connect(self._slotTableSectionMoved)
         self.DataManager.registerRootObjectListener(self.DataManagerUpdated)

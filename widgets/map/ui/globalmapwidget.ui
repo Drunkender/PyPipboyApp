@@ -45,7 +45,7 @@
        <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
       <property name="dragMode">
-       <enum>QGraphicsView::ScrollHandDrag</enum>
+       <enum>QGraphicsView::DragMode::ScrollHandDrag</enum>
       </property>
       <property name="viewportUpdateMode">
        <enum>QGraphicsView::MinimalViewportUpdate</enum>

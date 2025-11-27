@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from PyQt5 import QtCore, uic
+from PyQt6 import QtCore, uic
 from widgets import widgets
 
 class QuickAidWidget(widgets.WidgetBase):

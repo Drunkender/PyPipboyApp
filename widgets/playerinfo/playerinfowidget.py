@@ -4,7 +4,7 @@
 import datetime
 import os
 import math
-from PyQt5 import QtWidgets, QtCore, uic
+from PyQt6 import QtWidgets, QtCore, uic
 from pypipboy.types import eValueType
 from widgets import widgets
 

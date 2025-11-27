@@ -2,7 +2,7 @@
 
 
 import os
-from PyQt5 import QtWidgets, QtCore, uic
+from PyQt6 import QtWidgets, QtCore, uic
 from widgets import widgets
 from widgets.shared import settings
 from pypipboy.datamanager import ePipboyValueType
@@ -71,9 +71,9 @@ class InventoryBrowserWidget(widgets.WidgetBase):
         settings.setHeaderSectionSizes(tableHeader, self.app.settings.value(skeySizes, []))
         settings.setHeaderSectionVisualIndices(tableHeader, self.app.settings.value(skeyMoved, []))
         if proxyModel.sortReversed:
-            tab.tableView.sortByColumn(proxyModel.sortColumn, QtCore.Qt.DescendingOrder)
+            tab.tableView.sortByColumn(proxyModel.sortColumn, QtCore.Qt.SortOrder.DescendingOrder)
         else:
-            tab.tableView.sortByColumn(proxyModel.sortColumn, QtCore.Qt.AscendingOrder)
+            tab.tableView.sortByColumn(proxyModel.sortColumn, QtCore.Qt.SortOrder.AscendingOrder)
         @QtCore.pyqtSlot(int, int, int)
         def _slotSectionResized(logicalIndex, oldSize, newSize):
             self.app.settings.setValue(skeySizes, settings.getHeaderSectionSizes(tableHeader))
@@ -103,7 +103,7 @@ class InventoryBrowserWidget(widgets.WidgetBase):
                     selected.append(item)
             if current:
                 model.showItemContextMenu(self.dataManager, current, selected, pos, tab.tableView)
-        tab.tableView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        tab.tableView.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         tab.tableView.customContextMenuRequested.connect(_slotItemContextMenu)
         @QtCore.pyqtSlot(QtCore.QModelIndex)
         def _slotItemDoubleClicked(index):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 
 
 
@@ -44,9 +44,9 @@ class WorkshopTableModel(QtCore.QAbstractTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return 12
 
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == 0:
                     return 'Name'
                 elif section == 1:
@@ -73,11 +73,11 @@ class WorkshopTableModel(QtCore.QAbstractTableModel):
                     return 'Beds Diff'
         return None
 
-    def data(self, index, role = QtCore.Qt.DisplayRole):
+    def data(self, index, role = QtCore.Qt.ItemDataRole.DisplayRole):
         return self._data(self._workshops[index.row()], index.column(), role)
 
-    def _data(self, workshop, column, role = QtCore.Qt.DisplayRole):
-        if role == QtCore.Qt.DisplayRole:
+    def _data(self, workshop, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == 0:
                 text = workshop.child('text').value()
                 if workshop.child('rating').value() < 0:
@@ -154,23 +154,23 @@ class WorkshopTableModel(QtCore.QAbstractTableModel):
                     return '+' + str(value)
                 else:
                     return str(value)
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == 0:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             else:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
-        elif role == QtCore.Qt.FontRole:
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
+        elif role == QtCore.Qt.ItemDataRole.FontRole:
             if workshop.child('rating').value() < 0:
                 font = QtGui.QFont()
                 font.setBold(True)
                 return font
         return None
 
-    def dataRaw(self, index, role = QtCore.Qt.DisplayRole):
+    def dataRaw(self, index, role = QtCore.Qt.ItemDataRole.DisplayRole):
         return self._dataRaw(self._workshops[index.row()], index.column(), role)
 
-    def _dataRaw(self, workshop, column, role = QtCore.Qt.DisplayRole):
-        if role == QtCore.Qt.DisplayRole:
+    def _dataRaw(self, workshop, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == 0:
                 return workshop.child('text').value()
             elif column == 1:
@@ -227,7 +227,7 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
         self.lastSortReversed = bool(int(self.settings.value(prefix + '/lastSortReversed', 0)))
         self.filterString = ''
         
-    def sort(self, column, order = QtCore.Qt.AscendingOrder):
+    def sort(self, column, order = QtCore.Qt.SortOrder.AscendingOrder):
         if self.sortColumn != column:
             self.lastSortColumn = self.sortColumn
             self.settings.setValue(self._settingsPrefix + '/lastSortColumn', self.lastSortColumn)
@@ -235,7 +235,7 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
             self.settings.setValue(self._settingsPrefix + '/lastSortReversed', int(self.lastSortReversed))
             self.sortColumn = column
             self.settings.setValue(self._settingsPrefix + '/sortColumn', column)
-        if order == QtCore.Qt.DescendingOrder:
+        if order == QtCore.Qt.SortOrder.DescendingOrder:
             self.sortReversed = True
         else:
             self.sortReversed = False
@@ -259,9 +259,9 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
             pass
         return super().lessThan(left, right)
     
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
-        if orientation == QtCore.Qt.Vertical:
-            if role == QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if orientation == QtCore.Qt.Orientation.Vertical:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 return section + 1
         else:
             return super().headerData(section, orientation, role)

@@ -2,7 +2,7 @@
 
 
 import os
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PyQt6 import QtWidgets, QtCore, QtGui, uic
 from widgets import widgets
 from widgets.shared import settings
 
@@ -20,24 +20,24 @@ class EffectsTableModel(QtCore.QAbstractTableModel):
         self.showInactive = bool(int(self.settings.value('effectswidget/showInactive', False)))
         self.signalEffectsUpdate.connect(self._slotEffectsUpdate)
         
-    @QtCore.pyqtSlot(bool)
+    @QtCore.pyqtSlot(int)
     def setShowPermanent(self, value, signal = True):
-        self.showPermanent = value
+        self.showPermanent = bool(value)
         # Buggy QSettings Linux implementation forces us to save as int
         self.settings.setValue('effectswidget/showPermanent', int(value))
         if signal:
             self.signalEffectsUpdate.emit()
         
-    @QtCore.pyqtSlot(bool)
+    @QtCore.pyqtSlot(int)
     def setShowEmptySources(self, value, signal = True):
-        self.showEmptySources = value
+        self.showEmptySources = bool(value)
         self.settings.setValue('effectswidget/showEmptySources', int(value))
         if signal:
             self.signalEffectsUpdate.emit()
     
-    @QtCore.pyqtSlot(bool)
+    @QtCore.pyqtSlot(int)
     def setShowInactive(self, value, signal = True):
-        self.showInactive = value
+        self.showInactive = bool(value)
         self.settings.setValue('effectswidget/showInactive', int(value))
         if signal:
             self.signalEffectsUpdate.emit()
@@ -72,9 +72,9 @@ class EffectsTableModel(QtCore.QAbstractTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return 6
     
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == 0:
                     return 'Name'
                 elif section == 1:
@@ -89,12 +89,12 @@ class EffectsTableModel(QtCore.QAbstractTableModel):
                     return 'A'
         return None
 
-    def data(self, index, role = QtCore.Qt.DisplayRole):
+    def data(self, index, role = QtCore.Qt.ItemDataRole.DisplayRole):
         effect = self.effectList[index.row()]
         return self._data(effect, index.column(), role)
         
-    def _data(self, effect, column, role = QtCore.Qt.DisplayRole):
-        if role == QtCore.Qt.DisplayRole:
+    def _data(self, effect, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == 0:
                 customDesc = effect.child('CustomDesc')
                 if customDesc and customDesc.value():
@@ -139,24 +139,24 @@ class EffectsTableModel(QtCore.QAbstractTableModel):
                     return '◼'
                 else:
                     return ''
-        elif role == QtCore.Qt.FontRole:
+        elif role == QtCore.Qt.ItemDataRole.FontRole:
             if effect.child('IsActive').value():
                 font = QtGui.QFont()
                 font.setBold(True)
                 return font
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == 0:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             elif column == 1:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             elif column == 2:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == 3:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == 4:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == 5:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
         return None
         
     def getPipValue(self, row):
@@ -176,9 +176,9 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
         # Buggy QSettings Linux implementation forces us to convert to int and then to bool
         self.sortReversed = bool(int(self.settings.value('effectswidget/sortReversed', 0)))
         
-    def sort(self, column, order = QtCore.Qt.AscendingOrder):
+    def sort(self, column, order = QtCore.Qt.SortOrder.AscendingOrder):
         self.sortColumn = column
-        if order == QtCore.Qt.DescendingOrder:
+        if order == QtCore.Qt.SortOrder.DescendingOrder:
             self.sortReversed = True
         else:
             self.sortReversed = False
@@ -219,9 +219,9 @@ class EffectsWidget(widgets.WidgetBase):
         self.widget.showEmptySourcesCheckBox.stateChanged.connect(self.effectsViewModel.setShowEmptySources)
         self.widget.showInactiveCheckBox.stateChanged.connect(self.effectsViewModel.setShowInactive)
         if self.sortProxyModel.sortReversed:
-            self.widget.effectsView.sortByColumn(self.sortProxyModel.sortColumn, QtCore.Qt.DescendingOrder)
+            self.widget.effectsView.sortByColumn(self.sortProxyModel.sortColumn, QtCore.Qt.SortOrder.DescendingOrder)
         else:
-            self.widget.effectsView.sortByColumn(self.sortProxyModel.sortColumn, QtCore.Qt.AscendingOrder)
+            self.widget.effectsView.sortByColumn(self.sortProxyModel.sortColumn, QtCore.Qt.SortOrder.AscendingOrder)
         self.dataManager = datamanager
         self.dataManager.registerRootObjectListener(self._onPipRootObjectEvent)
         

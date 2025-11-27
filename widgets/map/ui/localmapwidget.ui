@@ -33,7 +33,7 @@
        <enum>Qt::ScrollBarAlwaysOff</enum>
       </property>
       <property name="dragMode">
-       <enum>QGraphicsView::ScrollHandDrag</enum>
+       <enum>QGraphicsView::DragMode::ScrollHandDrag</enum>
       </property>
      </widget>
      <widget class="QWidget" name="widget" native="true">

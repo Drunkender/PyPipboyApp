@@ -1,6 +1,6 @@
 import os
 import logging
-from PyQt5 import QtCore, QtWidgets, QtGui, uic
+from PyQt6 import QtCore, QtWidgets, QtGui, uic
 
 class AutoDocSettingsDialog(QtWidgets.QDialog):
     Settings = None

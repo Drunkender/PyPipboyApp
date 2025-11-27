@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui
 from pypipboy import inventoryutils
 
 
@@ -98,9 +98,9 @@ class InventoryTableModel(QtCore.QAbstractTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return 5
 
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == 0:
                     return 'Name'
                 elif section == 1:
@@ -113,11 +113,11 @@ class InventoryTableModel(QtCore.QAbstractTableModel):
                     return 'Val/Wt'
         return None
 
-    def data(self, index, role = QtCore.Qt.DisplayRole):
+    def data(self, index, role = QtCore.Qt.ItemDataRole.DisplayRole):
         return self._data(self._items[index.row()], index.column(), role)
 
-    def _data(self, item, column, role = QtCore.Qt.DisplayRole):
-        if role == QtCore.Qt.DisplayRole:
+    def _data(self, item, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == 0:
                 return item.child('text').value()
             elif column == 1:
@@ -142,18 +142,18 @@ class InventoryTableModel(QtCore.QAbstractTableModel):
                         return round(value/weight, 2)
                 except:
                     return None
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == 0:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             elif column == 1:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == 2:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == 3:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == 4:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
-        elif role == QtCore.Qt.FontRole:
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
+        elif role == QtCore.Qt.ItemDataRole.FontRole:
             if item.child('equipState').value() > 0:
                 font = QtGui.QFont()
                 font.setBold(True)
@@ -218,10 +218,10 @@ class CatAllModel(InventoryTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return super().columnCount(parent) + 3
 
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == pc:
                     return 'E'
                 elif section == pc + 1:
@@ -230,9 +230,9 @@ class CatAllModel(InventoryTableModel):
                     return 'Category'
         return super().headerData(section, orientation, role)
 
-    def _data(self, item, column, role = QtCore.Qt.DisplayRole):
+    def _data(self, item, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if role == QtCore.Qt.DisplayRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == pc:
                 if item.child('equipState').value() > 0:
                     return '◼'
@@ -268,13 +268,13 @@ class CatAllModel(InventoryTableModel):
                 else:
                     text = cached.value
                 return text
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == pc:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
             elif column == pc + 1:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
             elif column == pc + 2:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
         return super()._data(item, column, role)
 
 
@@ -290,10 +290,10 @@ class CatWeaponsModel(InventoryTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return super().columnCount(parent) + 9
 
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == pc:
                     return 'E'
                 elif section == pc + 1:
@@ -314,9 +314,9 @@ class CatWeaponsModel(InventoryTableModel):
                     return 'Ammo'
         return super().headerData(section, orientation, role)
 
-    def _data(self, item, column, role = QtCore.Qt.DisplayRole):
+    def _data(self, item, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if role == QtCore.Qt.DisplayRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == pc:
                 if item.child('equipState').value() > 0:
                     return '◼'
@@ -391,25 +391,25 @@ class CatWeaponsModel(InventoryTableModel):
                     text = inventoryutils.itemFindItemCardInfoValue(item, 10, 'damageType', 'text')
                     text += ' (' + str(value) + ')'
                 return text
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == pc:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
             elif column == pc + 1:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
             elif column == pc + 2:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == pc + 3:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == pc + 4:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == pc + 5:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == pc + 6:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             elif column == pc + 7:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             elif column == pc + 8:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
         return super()._data(item, column, role)
 
     def _cmUseActionText(self, item, selected):
@@ -431,10 +431,10 @@ class CatApparelModel(InventoryTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return super().columnCount(parent) + 5
 
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == pc:
                     return 'E'
                 elif section == pc + 1:
@@ -447,9 +447,9 @@ class CatApparelModel(InventoryTableModel):
                     return 'Slots'
         return super().headerData(section, orientation, role)
 
-    def _data(self, item, column, role = QtCore.Qt.DisplayRole):
+    def _data(self, item, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if role == QtCore.Qt.DisplayRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == pc:
                 if item.child('equipState').value() > 0:
                     return '◼'
@@ -538,17 +538,17 @@ class CatApparelModel(InventoryTableModel):
                         text += itemApparelPaperDollSections[i]
                     i += 1
                 return text
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == pc:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
             elif column == pc + 1:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
             elif column == pc + 2:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == pc + 3:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             elif column == pc + 4:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
         return super()._data(item, column, role)
 
     def _cmUseActionText(self, item, selected):
@@ -617,17 +617,17 @@ class CatAidModel(InventoryTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return super().columnCount(parent) + 1
 
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == pc:
                     return 'Effects'
         return super().headerData(section, orientation, role)
 
-    def _data(self, item, column, role = QtCore.Qt.DisplayRole):
+    def _data(self, item, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if role == QtCore.Qt.DisplayRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == pc:
                 cached = item.getUserCache('effectstext')
                 descCount = 0
@@ -672,9 +672,9 @@ class CatAidModel(InventoryTableModel):
                 else:
                     text = cached.value
                 return text
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == pc:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
         return super()._data(item, column, role)
 
     def _cmUseActionText(self, item, selected):
@@ -729,19 +729,19 @@ class CatJunkModel(InventoryTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return super().columnCount(parent) + 2
 
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == pc:
                     return 'Tagged'
                 elif section == pc + 1:
                     return 'Components'
         return super().headerData(section, orientation, role)
 
-    def _data(self, item, column, role = QtCore.Qt.DisplayRole):
+    def _data(self, item, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
         pc = super().columnCount()
-        if role == QtCore.Qt.DisplayRole:
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == pc:
                 if item.child('taggedForSearch').value():
                     return '◼'
@@ -765,11 +765,11 @@ class CatJunkModel(InventoryTableModel):
                 else:
                     text = cached.value
                 return text
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == pc:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
             elif column == pc + 1:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
         return super()._data(item, column, role)
 
     def _cmIsUseActionEnabled(self, item, selected):
@@ -839,9 +839,9 @@ class ComponentsTableModel(QtCore.QAbstractTableModel):
     def columnCount(self, parent = QtCore.QModelIndex()):
         return 4
 
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
-        if orientation == QtCore.Qt.Horizontal:
-            if role == QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if orientation == QtCore.Qt.Orientation.Horizontal:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 if section == 0:
                     return 'Name'
                 elif section == 1:
@@ -852,11 +852,11 @@ class ComponentsTableModel(QtCore.QAbstractTableModel):
                     return 'Items'
         return None
 
-    def data(self, index, role = QtCore.Qt.DisplayRole):
+    def data(self, index, role = QtCore.Qt.ItemDataRole.DisplayRole):
         return self._data(self._components[index.row()], index.column(), role)
 
-    def _data(self, component, column, role = QtCore.Qt.DisplayRole):
-        if role == QtCore.Qt.DisplayRole:
+    def _data(self, component, column, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
             if column == 0:
                 return component.child('text').value()
             elif column == 1:
@@ -876,16 +876,16 @@ class ComponentsTableModel(QtCore.QAbstractTableModel):
                         text += ', '
                     text += item.child('text').value()
                 return text
-        elif role == QtCore.Qt.TextAlignmentRole:
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
             if column == 0:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
             elif column == 1:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignRight
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignRight
             elif column == 2:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignCenter
             elif column == 3:
-                return QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft
-        elif role == QtCore.Qt.FontRole:
+                return QtCore.Qt.AlignmentFlag.AlignVCenter | QtCore.Qt.AlignmentFlag.AlignLeft
+        elif role == QtCore.Qt.ItemDataRole.FontRole:
             if component.child('taggedForSearch').value():
                 font = QtGui.QFont()
                 font.setBold(True)

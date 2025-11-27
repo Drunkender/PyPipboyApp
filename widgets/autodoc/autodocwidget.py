@@ -1,6 +1,6 @@
 import os
 import logging
-from PyQt5 import QtCore, uic
+from PyQt6 import QtCore, uic
 from widgets import widgets
 from .autodocsettingsdialog import AutoDocSettingsDialog
 

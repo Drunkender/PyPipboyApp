@@ -1,8 +1,8 @@
 import os
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt6 import QtCore, QtGui, QtWidgets, uic
+from PyQt6.QtCore import *
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 from widgets import widgets
 from pypipboy import inventoryutils
 from widgets.shared import settings
@@ -123,7 +123,7 @@ class AmmoCountWidget(widgets.WidgetBase):
                     QStandardItem(count)
                 ]
 
-                item[1].setData(QtCore.Qt.AlignCenter, QtCore.Qt.TextAlignmentRole)
+                item[1].setData(QtCore.Qt.AlignmentFlag.AlignCenter, QtCore.Qt.ItemDataRole.TextAlignmentRole)
                 self.ammoWatchListModel.appendRow(item)
             self.widget.ammoTableView.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
             self.widget.ammoTableView.verticalHeader().setSectionResizeMode(QHeaderView.Fixed)
@@ -131,7 +131,7 @@ class AmmoCountWidget(widgets.WidgetBase):
             self.widget.ammoTableView.horizontalHeader().setStretchLastSection(True)
             self.widget.ammoTableView.setModel(self.ammoWatchListModel)
 
-            self.widget.ammoTableView.sortByColumn(0, QtCore.Qt.AscendingOrder)
+            self.widget.ammoTableView.sortByColumn(0, QtCore.Qt.SortOrder.AscendingOrder)
 
 
 

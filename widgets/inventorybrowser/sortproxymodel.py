@@ -2,7 +2,7 @@
 
 
 import re
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 from pypipboy import inventoryutils
 
 
@@ -20,7 +20,7 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
         self.lastSortReversed = bool(int(self.settings.value(prefix + '/lastSortReversed', 0)))
         self.filterString = ''
         
-    def sort(self, column, order = QtCore.Qt.AscendingOrder):
+    def sort(self, column, order = QtCore.Qt.SortOrder.AscendingOrder):
         if self.sortColumn != column:
             self.lastSortColumn = self.sortColumn
             self.settings.setValue(self._settingsPrefix + '/lastSortColumn', self.lastSortColumn)
@@ -28,7 +28,7 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
             self.settings.setValue(self._settingsPrefix + '/lastSortReversed', int(self.lastSortReversed))
             self.sortColumn = column
             self.settings.setValue(self._settingsPrefix + '/sortColumn', column)
-        if order == QtCore.Qt.DescendingOrder:
+        if order == QtCore.Qt.SortOrder.DescendingOrder:
             self.sortReversed = True
         else:
             self.sortReversed = False
@@ -58,9 +58,9 @@ class SortProxyModel(QtCore.QSortFilterProxyModel):
             pass
         return super().lessThan(left, right)
     
-    def headerData(self, section, orientation, role = QtCore.Qt.DisplayRole):
-        if orientation == QtCore.Qt.Vertical:
-            if role == QtCore.Qt.DisplayRole:
+    def headerData(self, section, orientation, role = QtCore.Qt.ItemDataRole.DisplayRole):
+        if orientation == QtCore.Qt.Orientation.Vertical:
+            if role == QtCore.Qt.ItemDataRole.DisplayRole:
                 return section + 1
         else:
             return super().headerData(section, orientation, role)
@@ -77,7 +77,7 @@ class WeaponSortProxyModel(SortProxyModel):
         super().__init__(settings, prefix, qparent)
     
     def lessThan(self, left, right):
-        if self.sourceModel().headerData(left.column(), QtCore.Qt.Horizontal) == 'Damage':
+        if self.sourceModel().headerData(left.column(), QtCore.Qt.Orientation.Horizontal) == 'Damage':
             leftItem = self.sourceModel().getPipValue(left.row())
             rightItem = self.sourceModel().getPipValue(right.row())
             def _getDamage(item):
@@ -103,7 +103,7 @@ class ApparelSortProxyModel(SortProxyModel):
         super().__init__(settings, prefix, qparent)
     
     def lessThan(self, left, right):
-        if self.sourceModel().headerData(left.column(), QtCore.Qt.Horizontal) == 'DMG Resist':
+        if self.sourceModel().headerData(left.column(), QtCore.Qt.Orientation.Horizontal) == 'DMG Resist':
             leftItem = self.sourceModel().getPipValue(left.row())
             rightItem = self.sourceModel().getPipValue(right.row())
             def _getDamageResist(item):

@@ -1,5 +1,5 @@
 import os
-from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtSvg
+from PyQt6 import QtWidgets, QtCore, QtGui, uic, QtSvg
 from widgets.shared.graphics import ImageFactory
 from widgets import widgets
 from widgets.shared import settings
@@ -14,7 +14,7 @@ class EditPOIDialog(QtWidgets.QDialog):
         uic.loadUi(os.path.join(self.basepath, 'ui', 'editpoidialog.ui'), self)
 
         if (color == None):
-            self.selectedColor = QtCore.Qt.black
+            self.selectedColor = QtCore.Qt.GlobalColor.black
         else:
             self.selectedColor = color
         
@@ -43,8 +43,8 @@ class EditPOIDialog(QtWidgets.QDialog):
             gv = QtWidgets.QGraphicsView()
             gv.setObjectName('gvIconPreview_'+str(i))
             gv.setFixedSize(28,28)
-            gv.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-            gv.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+            gv.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            gv.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
             rdo = QtWidgets.QRadioButton()
             rdo.setObjectName('rdoIcon_'+str(i))
             rdo.toggled.connect(self.iconSelectionChanged)
@@ -54,7 +54,7 @@ class EditPOIDialog(QtWidgets.QDialog):
             pi = PipboyIcon(iconFiles[i], gv, 28)
             self.Icons.append(pi)
             pi.Color = self.selectedColor 
-            pi.BGColor = QtCore.Qt.transparent
+            pi.BGColor = QtCore.Qt.GlobalColor.transparent
             pi.Update()
 
             col += 2

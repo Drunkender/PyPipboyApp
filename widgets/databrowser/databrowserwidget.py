@@ -3,7 +3,7 @@
 
 import queue
 import os
-from PyQt5 import QtWidgets, uic, QtCore
+from PyQt6 import QtWidgets, uic, QtCore
 from pypipboy.types import eValueType
 from pypipboy.datamanager import eValueUpdatedEventType
 from widgets import widgets
@@ -39,7 +39,7 @@ class DataBrowserTreeModel(QtCore.QAbstractItemModel):
         try:
             value = self._valueUpdates.get_nowait()
             # Now we are in the correct thread to emit the dataChanged signal
-            self.dataChanged.emit(self.createIndex(value.pipParentIndex, 0, value), self.createIndex(value.pipParentIndex, 4, value), [QtCore.Qt.EditRole])
+            self.dataChanged.emit(self.createIndex(value.pipParentIndex, 0, value), self.createIndex(value.pipParentIndex, 4, value), [QtCore.Qt.ItemDataRole.EditRole])
             if value.valueType == eValueType.ARRAY or value.valueType == eValueType.OBJECT:
                 self.layoutAboutToBeChanged.emit()
                 self.layoutChanged.emit()
@@ -49,7 +49,7 @@ class DataBrowserTreeModel(QtCore.QAbstractItemModel):
             
         
     def headerData(self, section, orientation, role):
-        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
+        if orientation == QtCore.Qt.Orientation.Horizontal and role == QtCore.Qt.ItemDataRole.DisplayRole:
             if section == 0:
                 return "Record"
             elif section == 1:
@@ -105,7 +105,7 @@ class DataBrowserTreeModel(QtCore.QAbstractItemModel):
     def data(self, index, role):
         if not self.rootObject or not index.isValid():
             return None
-        if role != QtCore.Qt.DisplayRole:
+        if role != QtCore.Qt.ItemDataRole.DisplayRole:
             return None
         item = index.internalPointer()
         if index.column() == 0:
@@ -157,7 +157,7 @@ class DataBrowserWidget(widgets.WidgetBase):
         self.dataManager = datamanager
         self.app = app
         self.treeModel = DataBrowserTreeModel(self.widget.treeView, self.dataManager)
-        self.widget.treeView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.widget.treeView.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.widget.treeView.customContextMenuRequested.connect(self._slotShowTreeCustomContextMenu)
         self.treeHeader = self.widget.treeView.header()
         self.treeHeader.setSectionsMovable(True)

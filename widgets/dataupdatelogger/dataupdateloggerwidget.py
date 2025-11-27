@@ -3,7 +3,7 @@
 
 import datetime
 import os
-from PyQt5 import QtWidgets, QtCore, uic
+from PyQt6 import QtWidgets, QtCore, uic
 from pypipboy.types import eValueType
 from pypipboy.datamanager import eValueUpdatedEventType
 from .. import widgets
@@ -38,9 +38,9 @@ class DataUpdateLoggerWidget(widgets.WidgetBase):
     def _slotClearLog(self):
         self.widget.logTextEdit.clear()
         
-    @QtCore.pyqtSlot(bool)
+    @QtCore.pyqtSlot(int)
     def _slotEnableLogging(self, value):
-        if value:
+        if value == 2:  # Qt.CheckState.Checked
             self.networkchannel.registerConnectionListener(self._onConnectionStateChange)
             self.dataManager.registerRootObjectListener(self._onRootObjectEvent)
             self.dataManager.registerValueUpdatedListener(self._onValueUpdatedEvent)

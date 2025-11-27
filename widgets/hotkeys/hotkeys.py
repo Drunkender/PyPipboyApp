@@ -3,9 +3,9 @@ import datetime
 import time
 import os
 import traceback, sys
-from PyQt5 import QtWidgets, QtCore, uic
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt6 import QtWidgets, QtCore, uic
+from PyQt6.QtWidgets import *
+from PyQt6.QtGui import *
 from pypipboy.types import eValueType
 from widgets import widgets
 from widgets.shared import settings
@@ -55,11 +55,11 @@ class HotkeyWidget(widgets.WidgetBase):
         Actions['testHotkeyHook'] =Action('Test Hotkey Hook', '', self.testHotkeyHook, 0 ) 
         Actions['toggleAllHotkeys'] =Action('Toggle Hotkeys On/Off', '', self.llh.toggleAllHotkeys, 0 ) 
         Actions['equipNextGrenade'] =Action('Cycle Equipped Grenade', '', self.equipNextGrendae, 0 ) 
-        Actions['toggleEquippedGrenades'] =Action('Unequip\Equip Current Grenade', '', self.toggleEquippedGrenades, 0 ) 
+        Actions['toggleEquippedGrenades'] =Action(r'Unequip\Equip Current Grenade', '', self.toggleEquippedGrenades, 0 ) 
         Actions['saveEquippedApparelToSlot'] =Action('Save all currently equipped apparel to slot ', '(param1: Slot Number [1-99])', self.saveEquippedApparelToSlot, 1 ) 
         Actions['equipApparelFromSlot'] =Action('Equip apparel from saved slot', '(param1: Slot Number [1-99])', self.equipApparelFromSlot, 1 ) 
         Actions['unequipAllApparel'] =Action('Unequip all items of apparel', '', self.unequipAllApparel, 0 ) 
-        Actions['toggleRadio'] =Action('Toggle Radio On\Off', '', self.toggleRadio, 0 ) 
+        Actions['toggleRadio'] =Action(r'Toggle Radio On\Off', '', self.toggleRadio, 0 ) 
         Actions['nextRadio'] =Action('Tune to next radio station', '', self.nextRadio, 0 ) 
         Actions['useStimpak'] =Action('Use Stimpak', '', self.useStimpak, 0 ) 
         Actions['useRadaway'] =Action('Use Radaway', '', self.useRadAway, 0 ) 
@@ -425,8 +425,8 @@ class HotkeyWidget(widgets.WidgetBase):
 
     @QtCore.pyqtSlot()
     def _addButtonHandler(self):
-        kc = self.widget.keyComboBox.currentData(QtCore.Qt.UserRole)
-        actionkey = self.widget.actionComboBox.currentData(QtCore.Qt.UserRole)
+        kc = self.widget.keyComboBox.currentData(QtCore.Qt.ItemDataRole.UserRole)
+        actionkey = self.widget.actionComboBox.currentData(QtCore.Qt.ItemDataRole.UserRole)
 
         if (kc):
             hk = Hotkey( 
@@ -462,7 +462,7 @@ class HotkeyWidget(widgets.WidgetBase):
 
     @QtCore.pyqtSlot(int)
     def _actionComboBoxCurrentIndexChanged(self, index):
-        data = self.widget.actionComboBox.currentData(QtCore.Qt.UserRole)
+        data = self.widget.actionComboBox.currentData(QtCore.Qt.ItemDataRole.UserRole)
     
         self.widget.param1Label.setVisible(False)
         self.widget.param1LineEdit.setVisible(False)
@@ -490,7 +490,7 @@ class HotkeyWidget(widgets.WidgetBase):
         if(curIndex >= 0):
             item = table.item(curIndex, 0)
             self._logger.debug("_deleteButtonHandler: item:" + str(item))
-            hkid = item.data(QtCore.Qt.UserRole)
+            hkid = item.data(QtCore.Qt.ItemDataRole.UserRole)
             if(hkid):
                 self._logger.debug("_deleteButtonHandler: hkid:" + str(hkid))
                 hk = self.llh.getHotkeyById(hkid)
@@ -507,9 +507,9 @@ class HotkeyWidget(widgets.WidgetBase):
         table.setColumnCount(6)
         table.setHorizontalHeaderLabels(["key", "keycode", "modifiers" ,"action", "params", "enabled"])
         table.setAlternatingRowColors(True)
-        table.setEditTriggers(QTableWidget.NoEditTriggers)
-        table.setSelectionBehavior(QTableWidget.SelectRows)
-        table.setSelectionMode(QTableWidget.SingleSelection)
+        table.setEditTriggers(QAbstractItemView.EditTrigger(0))
+        table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         table.setColumnHidden(1, True)
         table.setColumnHidden(5, True)
 
@@ -521,7 +521,7 @@ class HotkeyWidget(widgets.WidgetBase):
             table.setItem(row, 0, item)
             if current is not None and current == id(hk):
                 selected = item
-            item.setData(QtCore.Qt.UserRole, QtCore.QVariant(id(hk)))
+            item.setData(QtCore.Qt.ItemDataRole.UserRole, QtCore.QVariant(id(hk)))
             
             item = QTableWidgetItem(str(hk.keycode))
             table.setItem(row, 1, item)
@@ -722,6 +722,8 @@ def listener():
         #Added 4-18-15 for move to ctypes:
         windll.kernel32.GetModuleHandleW.restype = wintypes.HMODULE
         windll.kernel32.GetModuleHandleW.argtypes = [wintypes.LPCWSTR]
+        # Set up SetWindowsHookExA signature for 64-bit compatibility
+        windll.user32.SetWindowsHookExA.argtypes = [c_int, CFUNCTYPE(c_int, c_int, c_int, POINTER(c_void_p)), wintypes.HMODULE, wintypes.DWORD]
         # Hook both key up and key down events for common keys (non-system).
         hook_id = windll.user32.SetWindowsHookExA(0x00D, pointer,
                                                  windll.kernel32.GetModuleHandleW(None), 0)

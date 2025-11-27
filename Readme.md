@@ -1,9 +1,11 @@
 
-![python_version](https://img.shields.io/badge/Python-3.0-green.svg) ![dependencies](https://img.shields.io/badge/Dependencies-PyQt5%2C%20PyPipboy-green.svg) ![license_gpl3](https://img.shields.io/badge/License-GPL%203.0-green.svg)
+![python_version](https://img.shields.io/badge/Python-3.13.5-green.svg) ![dependencies](https://img.shields.io/badge/Dependencies-PyQt6%2C%20PyPipboy-green.svg) ![license_gpl3](https://img.shields.io/badge/License-GPL%203.0-green.svg)
 
 # PyPipboyApp
 
-PyPipboyApp is a platform independent and extensible unofficial Fallout 4 Pipboy Companion App written in Python3 using PyQt5 and [PyPipboy](https://github.com/matzman666/PyPipboy). It runs on Windows, Linux and Mac. Using a plugin mechanism it can be extendet with additional widgets and styles.
+**Version 0.9.0-alpha** - Now upgraded to PyQt6 and Python 3.13.5!
+
+PyPipboyApp is a platform independent and extensible unofficial Fallout 4 Pipboy Companion App written in Python3 using PyQt6 and [PyPipboy](https://github.com/matzman666/PyPipboy). It runs on Windows, Linux and Mac. Using a plugin mechanism it can be extendet with additional widgets and styles.
 
 # Motivation
 
@@ -53,12 +55,20 @@ Currently implemented features are:
 
 PyPipboy is at the beginning of the development. The first version of the GUI framework is ready including widget and style plugin mechanism is complete. There are also some working widgets and style examples.
 
+# Version 0.9.0-alpha Changes
+
+- **Major Upgrade**: Migrated from PyQt5 to PyQt6
+- **Python Version**: Updated to support Python 3.13.5
+- **Dependencies**: Updated to use PyQt6 and related packages
+- **API Updates**: Updated all Qt constants to use new PyQt6 enum format
+- **Compatibility**: Maintained backward compatibility with existing PyPipboy library
+
 # Usage
 
 For now the best option is to download the provided archives in the [release section](https://github.com/matzman666/PyPipboyApp/releases).
 
 Manual Installation:
-- Install Python3, PyQt5, PyPipboy and its dependencies
+- Install Python 3.13.5, PyQt6, PyPipboy and its dependencies
 - Download the application and run pypipboyapp.py (Beware that the version in the git repository does not contain any graphical assets as they are owned by Bethesda).
 
 

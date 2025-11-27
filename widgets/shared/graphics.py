@@ -3,7 +3,7 @@
 
 import os
 import logging
-from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtSvg
+from PyQt6 import QtWidgets, QtCore, QtGui, uic, QtSvg
 
 
 
@@ -24,9 +24,9 @@ class ImageFactory:
         else:
             endPainter = False
         maskImage = QtGui.QImage(image)
-        painter.setCompositionMode(QtGui.QPainter.CompositionMode_Multiply)
+        painter.setCompositionMode(QtGui.QPainter.CompositionMode.CompositionMode_Multiply)
         painter.fillRect( image.rect(), color)
-        painter.setCompositionMode(QtGui.QPainter.CompositionMode_DestinationIn)
+        painter.setCompositionMode(QtGui.QPainter.CompositionMode.CompositionMode_DestinationIn)
         painter.drawImage(0, 0, maskImage)
         if endPainter:
             painter.end()
@@ -43,11 +43,11 @@ class ImageFactory:
                         width = size
                         height = size
                     elif owidth > oheight:
-                        height = oheight/owidth * size
-                        width = size
+                        height = int(oheight/owidth * size)
+                        width = int(size)
                     else:
-                        height = size
-                        width = owidth/oheight * size
+                        height = int(size)
+                        width = int(owidth/oheight * size)
                 else:
                     width = int(owidth * scale)
                     height = int(oheight * scale)
@@ -55,7 +55,7 @@ class ImageFactory:
                 height = int(width * float(oheight)/float(owidth))
             elif width <= 0:
                 width = int(height * float(owidth)/float(oheight))
-        image = QtGui.QImage(width, height, QtGui.QImage.Format_ARGB32_Premultiplied)
+        image = QtGui.QImage(width, height, QtGui.QImage.Format.Format_ARGB32_Premultiplied)
         image.fill(QtGui.QColor.fromRgb(0,0,0,0))
         painter = QtGui.QPainter(image)
         svgRenderer.render(painter)
@@ -81,7 +81,7 @@ class ImageFactory:
                 image = self._imageMap[file]
             except:
                 image = QtGui.QImage(os.path.join(self.basepath, file))
-                if image.format() == QtGui.QImage.Format_Invalid:
+                if image.format() == QtGui.QImage.Format.Format_Invalid:
                     self._logger.error('Could not load image file "' + file + '".')
                     return QtGui.QImage()
                 self._imageMap[file] = image

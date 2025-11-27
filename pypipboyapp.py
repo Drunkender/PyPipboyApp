@@ -11,7 +11,7 @@ import faulthandler
 import logging.config
 import threading
 import urllib.request
-from PyQt5 import QtGui, QtWidgets, QtCore, uic
+from PyQt6 import QtGui, QtWidgets, QtCore, uic
 from pypipboy.network import NetworkChannel
 from pypipboy.datamanager import PipboyDataManager
 from pypipboy.relayserver import RelayController
@@ -41,7 +41,7 @@ class PipboyMainWindow(QtWidgets.QMainWindow):
         self.statusbar.addPermanentWidget(self.connectionStatusLabel)
         self.setCentralWidget(None) # damn thing cannot be removed in Qt-Designer
         self.setDockNestingEnabled(True)
-        self.setTabPosition(QtCore.Qt.AllDockWidgetAreas, QtWidgets.QTabWidget.North)
+        self.setTabPosition(QtCore.Qt.DockWidgetArea.AllDockWidgetAreas, QtWidgets.QTabWidget.TabPosition.North)
         
     # Init function that is called after everything has been set up
     def init(self, app, networkchannel, datamanager):
@@ -104,12 +104,12 @@ class PyPipboyApp(QtWidgets.QApplication):
         QtCore.QCoreApplication.setApplicationName("PyPipboyApp")
         if inifile:
             self._logger.info('Using ini-file "' + str(inifile) + '".')
-            self.settings = QtCore.QSettings(inifile, QtCore.QSettings.IniFormat)
+            self.settings = QtCore.QSettings(inifile, QtCore.QSettings.Format.IniFormat)
         elif platform.system() == 'Windows':
-            self.settings = QtCore.QSettings(QtCore.QSettings.IniFormat, QtCore.QSettings.UserScope, "PyPipboyApp", "PyPipboyApp")
+            self.settings = QtCore.QSettings(QtCore.QSettings.Format.IniFormat, QtCore.QSettings.Scope.UserScope, "PyPipboyApp", "PyPipboyApp")
             # If there are no settings, copy existing settings from registry
             if len(self.settings.allKeys()) <= 0:
-                registrySettings = QtCore.QSettings(QtCore.QSettings.NativeFormat, QtCore.QSettings.UserScope, "PyPipboyApp", "PyPipboyApp")
+                registrySettings = QtCore.QSettings(QtCore.QSettings.Format.NativeFormat, QtCore.QSettings.Scope.UserScope, "PyPipboyApp", "PyPipboyApp")
                 for k in registrySettings.allKeys():
                     self.settings.setValue(k, registrySettings.value(k))
                     #registrySettings.remove(k)
@@ -147,7 +147,7 @@ class PyPipboyApp(QtWidgets.QApplication):
             self.PROGRAM_VERSION_REV = versionJSON['rev']
             self.PROGRAM_VERSION_SUFFIX = versionJSON['suffix']
         except Exception as e:
-            self._logger.warn('Could not determine program version: ' + str(e))
+            self._logger.warning('Could not determine program version: ' + str(e))
 
     
     
@@ -160,8 +160,12 @@ class PyPipboyApp(QtWidgets.QApplication):
             launcherpath = os.path.abspath(os.path.join(basepath, os.pardir, 'PyPipBoyApp-Launcher.exe'))
             print ('launcherpath: ' + str(launcherpath))
             if 'nt' in os.name:
-                from win32com.propsys import propsys, pscon
-                import pythoncom
+                try:
+                    from win32com.propsys import propsys, pscon  # type: ignore
+                    import pythoncom  # type: ignore
+                except ImportError:
+                    # win32com not available, skip Windows-specific launcher setup
+                    return
                 hwnd = self.mainWindow.winId()
                 propStore = propsys.SHGetPropertyStoreForWindow(hwnd, propsys.IID_IPropertyStore)
                 propStore.SetValue(pscon.PKEY_AppUserModel_ID, propsys.PROPVARIANTType(u'matzman666.pypipboyapp.win32', pythoncom.VT_ILLEGAL))
@@ -173,7 +177,7 @@ class PyPipboyApp(QtWidgets.QApplication):
         # Load widgets
         self.helpWidget = uic.loadUi(os.path.join('ui', 'helpwidget.ui'))
         self.helpWidget.textBrowser.setSource(QtCore.QUrl.fromLocalFile(os.path.join('ui', 'res', 'helpwidget.html')))
-        self.mainWindow.addDockWidget(QtCore.Qt.TopDockWidgetArea, self.helpWidget)
+        self.mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea.TopDockWidgetArea, self.helpWidget)
         self._loadWidgets()
         # Restore saved window state
         savedFullScreen = bool(int(self.settings.value('mainwindow/fullscreen', 0)))
@@ -232,7 +236,7 @@ class PyPipboyApp(QtWidgets.QApplication):
                 port = int(self.settings.value('mainwindow/lastport'))
             self.signalConnectToHost.emit(host, port, True)
         self.startVersionCheck()
-        sys.exit(self.exec_())
+        sys.exit(self.exec())
 
     @QtCore.pyqtSlot(bool)
     def autoConnectToggled(self, value):
@@ -316,7 +320,7 @@ class PyPipboyApp(QtWidgets.QApplication):
     # connect to specified host (non blocking)
     # connect happens in its own thread
     # returns true when the thread was successfully started
-    @QtCore.pyqtSlot(str, int, bool, bool)        
+    @QtCore.pyqtSlot(str, int, bool)
     def connectToHost(self, host, port, retry = False,  busydialog= True):
         if not self.networkChannel.isConnected:
             self._logger.info('Connecting to host ' + host + ':' + str(port) + ' Retry=' + str(retry))
@@ -533,7 +537,7 @@ class PyPipboyApp(QtWidgets.QApplication):
                     newVersionAvailable = True
                 self._signalFinishedCheckVersion.emit(versionData, newVersionAvailable, False, '', verbose)
             except Exception as e:
-                self._logger.warn('Could not check for new version: ' + str(e))
+                self._logger.warning('Could not check for new version: ' + str(e))
                 self._signalFinishedCheckVersion.emit({}, False, True, str(e), verbose)
         self._checkVersionThread = threading.Thread(target = _checkVersion)
         self._checkVersionThread.start()
@@ -560,9 +564,9 @@ class PyPipboyApp(QtWidgets.QApplication):
     def setWindowStayOnTop(self, value):
         self.settings.setValue('mainwindow/stayOnTop', int(value))
         if value:
-            self.mainWindow.setWindowFlags(self.mainWindow.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+            self.mainWindow.setWindowFlags(self.mainWindow.windowFlags() | QtCore.Qt.WindowType.WindowStaysOnTopHint)
         else:
-            self.mainWindow.setWindowFlags(self.mainWindow.windowFlags() & ~QtCore.Qt.WindowStaysOnTopHint)
+            self.mainWindow.setWindowFlags(self.mainWindow.windowFlags() & ~QtCore.Qt.WindowType.WindowStaysOnTopHint)
         self.mainWindow.show()
 
     @QtCore.pyqtSlot(bool)
@@ -631,7 +635,7 @@ class PyPipboyApp(QtWidgets.QApplication):
                                 i = 0
                                 for w in widgets:
                                     w.setObjectName(info.LABEL + '_' + str(i))
-                                    self.mainWindow.addDockWidget(QtCore.Qt.TopDockWidgetArea, w)
+                                    self.mainWindow.addDockWidget(QtCore.Qt.DockWidgetArea.TopDockWidgetArea, w)
                                     self.widgets.append(w)
                                     if w.getMenuCategory():
                                         try:
@@ -697,7 +701,7 @@ class PyPipboyApp(QtWidgets.QApplication):
                     self.styles[dir] = style
                     self._logger.info('Added style "' + dir + '"')
                 else:
-                    self._logger.warn('Could not add style "' + dir + '": No style.qss found')
+                    self._logger.warning('Could not add style "' + dir + '": No style.qss found')
         menu = self.mainWindow.menuStyles
         def _genSlotSetStyles(app, name):
             return lambda : app.setStyle(name)
@@ -805,7 +809,7 @@ if __name__ == "__main__":
             logging.error('Error calling Faulthandle.enable(): ' + str(e))
             
         if (faulthandler.is_enabled()):
-            logging.warn('Faulthandler is enabled')
+            logging.warning('Faulthandler is enabled')
             #faulthandler.dump_traceback_later(5)
         else:
             logging.error('Faulthandler is NOT enabled')

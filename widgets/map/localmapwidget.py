@@ -3,7 +3,7 @@
 
 import os
 import logging
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PyQt6 import QtWidgets, QtCore, QtGui, uic
 from widgets import widgets
 from widgets.shared import settings
 from .marker import PipValueMarkerBase
@@ -21,7 +21,7 @@ class PlayerMarker(PipValueMarkerBase):
         self.pipValueListenerDepth = 1
         self.markerItem.setZValue(10)
         self.setColor(color,False)
-        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Bold), False)
+        self.setLabelFont(QtGui.QFont("Times", 8, QtGui.QFont.Weight.Bold), False)
         self.setMapPos(480, 300, 0, False)
         self.setLabel('Player', False)
         self.doUpdate()
@@ -49,7 +49,7 @@ class MapGraphicsItem(QtCore.QObject):
         self.lwidget = lwidget
         self.mapItem = self.PixmapItem(self)
         self.lwidget.mapScene.addItem(self.mapItem)
-        image = QtGui.QImage(960, 640, QtGui.QImage.Format_Indexed8)
+        image = QtGui.QImage(960, 640, QtGui.QImage.Format.Format_Indexed8)
         image.fill(QtGui.QColor.fromRgb(255,255,255))
         self._setMapPixmap(QtGui.QPixmap.fromImage(image))
         self.mapItem.setZValue(-10)
@@ -86,6 +86,8 @@ class LocalMapWidget(widgets.WidgetBase):
         self.controller = controller
         self.widget = uic.loadUi(os.path.join(self.basepath, 'ui', 'localmapwidget.ui'))
         self.setWidget(self.widget)
+        # Fix PyQt6 compatibility - set dragMode programmatically
+        self.widget.graphicsView.setDragMode(QtWidgets.QGraphicsView.DragMode.ScrollHandDrag)
         self._logger = logging.getLogger('pypipboyapp.map.localmap')
         self.mapZoomLevel = 1.0
         self.mapReqTimer = QtCore.QTimer()
@@ -98,7 +100,7 @@ class LocalMapWidget(widgets.WidgetBase):
         self.mapColor = QtGui.QColor.fromRgb(20,255,23)
         # Init graphics view
         self.COLORTABLE=[]
-        for i in range(256): self.COLORTABLE.append(QtGui.qRgb(i/4,i,i/2))
+        for i in range(256): self.COLORTABLE.append(QtGui.qRgb(int(i/4),i,int(i/2)))
         self.mapView = self.widget.graphicsView
         self.mapView.setScene(self.mapScene)
         self.mapView.setMouseTracking(True)
@@ -206,8 +208,9 @@ class LocalMapWidget(widgets.WidgetBase):
             self.widget.enableCheckbox.setChecked(False)
     
     
-    @QtCore.pyqtSlot(bool)
+    @QtCore.pyqtSlot(int)
     def _slotEnableMapTriggered(self, value):
+        value = bool(value)
         self._app.settings.setValue('localmapwidget/enabled', int(value))
         self.mapEnabledFlag = value
         if value:

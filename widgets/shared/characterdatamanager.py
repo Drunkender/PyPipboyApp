@@ -1,6 +1,6 @@
 import os
 import json
-from PyQt5 import QtCore
+from PyQt6 import QtCore
 
 from pypipboy import inventoryutils
 import logging

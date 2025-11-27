@@ -1,5 +1,5 @@
 import os
-from PyQt5 import QtWidgets, QtCore, QtGui, uic, QtSvg
+from PyQt6 import QtWidgets, QtCore, QtGui, uic, QtSvg
 from widgets.shared.graphics import ImageFactory
 from widgets import widgets
 from widgets.shared import settings

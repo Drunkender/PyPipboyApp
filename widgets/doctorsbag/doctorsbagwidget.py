@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-from PyQt5 import QtGui, QtWidgets, QtCore, uic
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt6 import QtGui, QtWidgets, QtCore, uic
+from PyQt6.QtWidgets import *
+from PyQt6.QtGui import *
 from widgets.shared.graphics import ImageFactory
 from .. import widgets
 from pypipboy import inventoryutils
@@ -55,7 +55,7 @@ class DoctorsBagWidget(widgets.WidgetBase):
         settingPath = 'doctorsbag/customItems'
         self.customItems = self._app.settings.value(settingPath, [])
         
-        self.widget.drugView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        self.widget.drugView.setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
         self.widget.drugView.customContextMenuRequested.connect(self.drugViewMenuRequested)
         
         self.widget.btnCustom.clicked.connect(self.showCustom)
@@ -104,44 +104,44 @@ class DoctorsBagWidget(widgets.WidgetBase):
 
     @QtCore.pyqtSlot(QtGui.QColor)
     def _slotColorUpdated(self, color):
-        ImageFactory.colorizeImage(self.customIcon, QtCore.Qt.black)
+        ImageFactory.colorizeImage(self.customIcon, QtCore.Qt.GlobalColor.black)
         ImageFactory.colorizeImage(self.customIconA, self.foreColor)
         customIcon = QIcon(QPixmap.fromImage(self.customIcon))
-        customIcon.addPixmap(QPixmap.fromImage(self.customIconA), QIcon.Active)
-        customIcon.addPixmap(QPixmap.fromImage(self.customIconA), QIcon.Normal, QIcon.On)
+        customIcon.addPixmap(QPixmap.fromImage(self.customIconA), QIcon.Mode.Active)
+        customIcon.addPixmap(QPixmap.fromImage(self.customIconA), QIcon.Mode.Normal, QIcon.State.On)
         self.widget.btnCustom.setIcon(customIcon)
         self.widget.btnCustom.setText('')
 
 
-        ImageFactory.colorizeImage(self.drugsIcon, QtCore.Qt.black)
+        ImageFactory.colorizeImage(self.drugsIcon, QtCore.Qt.GlobalColor.black)
         ImageFactory.colorizeImage(self.drugsIconA, self.foreColor)
         drugsIcon = QIcon(QPixmap.fromImage(self.drugsIcon))
-        drugsIcon.addPixmap(QPixmap.fromImage(self.drugsIconA), QIcon.Active)
-        drugsIcon.addPixmap(QPixmap.fromImage(self.drugsIconA), QIcon.Normal, QIcon.On)
+        drugsIcon.addPixmap(QPixmap.fromImage(self.drugsIconA), QIcon.Mode.Active)
+        drugsIcon.addPixmap(QPixmap.fromImage(self.drugsIconA), QIcon.Mode.Normal, QIcon.State.On)
         self.widget.btnDrugs.setIcon(drugsIcon)
         self.widget.btnDrugs.setText('')
 
-        ImageFactory.colorizeImage(self.drinkIcon, QtCore.Qt.black)
+        ImageFactory.colorizeImage(self.drinkIcon, QtCore.Qt.GlobalColor.black)
         ImageFactory.colorizeImage(self.drinkIconA, self.foreColor)
         drinkIcon = QIcon(QPixmap.fromImage(self.drinkIcon))
-        drinkIcon.addPixmap(QPixmap.fromImage(self.drinkIconA), QIcon.Active)
-        drinkIcon.addPixmap(QPixmap.fromImage(self.drinkIconA), QIcon.Normal, QIcon.On)
+        drinkIcon.addPixmap(QPixmap.fromImage(self.drinkIconA), QIcon.Mode.Active)
+        drinkIcon.addPixmap(QPixmap.fromImage(self.drinkIconA), QIcon.Mode.Normal, QIcon.State.On)
         self.widget.btnDrink.setIcon(drinkIcon)
         self.widget.btnDrink.setText('')
 
-        ImageFactory.colorizeImage(self.foodIcon, QtCore.Qt.black)
+        ImageFactory.colorizeImage(self.foodIcon, QtCore.Qt.GlobalColor.black)
         ImageFactory.colorizeImage(self.foodIconA, self.foreColor)
         foodIcon = QIcon(QPixmap.fromImage(self.foodIcon))
-        foodIcon.addPixmap(QPixmap.fromImage(self.foodIconA), QIcon.Active)
-        foodIcon.addPixmap(QPixmap.fromImage(self.foodIconA), QIcon.Normal, QIcon.On)
+        foodIcon.addPixmap(QPixmap.fromImage(self.foodIconA), QIcon.Mode.Active)
+        foodIcon.addPixmap(QPixmap.fromImage(self.foodIconA), QIcon.Mode.Normal, QIcon.State.On)
         self.widget.btnFood.setIcon(foodIcon)
         self.widget.btnFood.setText('')
 
-        ImageFactory.colorizeImage(self.allIcon, QtCore.Qt.black)
+        ImageFactory.colorizeImage(self.allIcon, QtCore.Qt.GlobalColor.black)
         ImageFactory.colorizeImage(self.allIconA, self.foreColor)
         allIcon = QIcon(QPixmap.fromImage(self.allIcon))
-        allIcon.addPixmap(QPixmap.fromImage(self.allIconA), QIcon.Active)
-        allIcon.addPixmap(QPixmap.fromImage(self.allIconA), QIcon.Normal, QIcon.On)
+        allIcon.addPixmap(QPixmap.fromImage(self.allIconA), QIcon.Mode.Active)
+        allIcon.addPixmap(QPixmap.fromImage(self.allIconA), QIcon.Mode.Normal, QIcon.State.On)
         self.widget.btnAll.setIcon(allIcon)   
         self.widget.btnAll.setText('')
         return
@@ -496,7 +496,7 @@ class DoctorsBagWidget(widgets.WidgetBase):
             self.widget.drugView.horizontalHeader().setStretchLastSection(True)
             self.widget.drugView.setModel(self.drugmodel)
 
-            self.widget.drugView.sortByColumn(0, QtCore.Qt.AscendingOrder)
+            self.widget.drugView.sortByColumn(0, QtCore.Qt.SortOrder.AscendingOrder)
 
     def createDrugModelItem(self, name, count, itemtooltip):
         tooltipstr = 'Left-click to use item\n'
@@ -511,7 +511,7 @@ class DoctorsBagWidget(widgets.WidgetBase):
         ]
         item[0].setToolTip(tooltipstr)
         item[1].setToolTip(tooltipstr)
-        item[1].setData(QtCore.Qt.AlignCenter, QtCore.Qt.TextAlignmentRole)
+        item[1].setData(QtCore.Qt.AlignmentFlag.AlignCenter, QtCore.Qt.ItemDataRole.TextAlignmentRole)
         return item
 
     def useItemByName(self, itemName):

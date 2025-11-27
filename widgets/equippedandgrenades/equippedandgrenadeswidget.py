@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import datetime
 import os
-from PyQt5 import QtGui, QtWidgets, QtCore, uic
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt6 import QtGui, QtWidgets, QtCore, uic
+from PyQt6.QtWidgets import *
+from PyQt6.QtGui import *
 from pypipboy.types import eValueType
 from .. import widgets
 from pypipboy import inventoryutils
@@ -57,12 +57,12 @@ class EquippedAndGrenadesWidget(widgets.WidgetBase):
 
     def colouriseIcon(self, img, colour):
         size = img.size()
-        image = QImage(QtCore.QSize(size.width()+1,size.height()+1), QImage.Format_ARGB32_Premultiplied)
-        image.fill(QtCore.Qt.transparent)
+        image = QImage(QtCore.QSize(size.width()+1,size.height()+1), QImage.Format.Format_ARGB32_Premultiplied)
+        image.fill(QtCore.Qt.GlobalColor.transparent)
         p = QPainter(image)
-        p.setCompositionMode(QPainter.CompositionMode_SourceOver)
+        p.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceOver)
         p.drawImage(QtCore.QRect(1,1,size.width(), size.height()), img)
-        p.setCompositionMode(QPainter.CompositionMode_SourceAtop)
+        p.setCompositionMode(QPainter.CompositionMode.CompositionMode_SourceAtop)
         p.setBrush(colour)
         p.drawRect(QtCore.QRect(0,0,size.width()+1,size.height()+1))
         p.end()
@@ -149,7 +149,7 @@ class EquippedAndGrenadesWidget(widgets.WidgetBase):
                     QStandardItem(count)
                 ]
                 
-                item[2].setData(QtCore.Qt.AlignCenter, QtCore.Qt.TextAlignmentRole)
+                item[2].setData(QtCore.Qt.AlignmentFlag.AlignCenter, QtCore.Qt.ItemDataRole.TextAlignmentRole)
                 
                 self.grenademodel.appendRow(item)
      
@@ -217,5 +217,5 @@ class EquippedAndGrenadesWidget(widgets.WidgetBase):
         if (selectedgrenade >=1):
             self.widget.grenadeView.selectRow(selectedgrenade-1)
         self.widget.grenadeView.hideColumn(0)
-        self.widget.grenadeView.sortByColumn(1, QtCore.Qt.AscendingOrder)
+        self.widget.grenadeView.sortByColumn(1, QtCore.Qt.SortOrder.AscendingOrder)
             
