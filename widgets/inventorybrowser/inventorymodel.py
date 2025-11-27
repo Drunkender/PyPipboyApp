@@ -201,7 +201,8 @@ class InventoryTableModel(QtCore.QAbstractTableModel):
             menu.exec(view.mapToGlobal(pos))
 
     def itemDoubleClicked(self, datamanager, item, view):
-        datamanager.rpcUseItem(item)
+        if self._cmIsUseActionEnabled(item, [item]):
+            datamanager.rpcUseItem(item)
 
     def tabVisibilityChanged(self, visible):
         self.tabIsVisible = visible
